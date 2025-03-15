@@ -42,3 +42,5 @@ def post_detail_view(request, pk):
     
     return  render(request=request, template_name= "blog/post_detail.html", context=context, status=200)
 
+def post_create_view(request):
+    return render(request, 'blog/post_create.html')

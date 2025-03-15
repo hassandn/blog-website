@@ -44,3 +44,24 @@ class BlogPostTest(TestCase):
     def test_status_404_if_post_id_not_exist(self):
         response = self.client.get(reverse('post_detail', args=[1000]))
         self.assertEqual(response.status_code, 404)
+        
+class TemplateTest(TestCase):
+    def setUp(self):    
+        self.user = User.objects.create(
+            username="testuser",
+        )
+        
+        self.post1 = Post.objects.create(
+                title="post one",
+                text="This is my first post",
+                status=Post.STATUS_CHOICES[0],
+                author=self.user,
+            )
+    def test_blog_list_template(self):
+        response = self.client.get(reverse('post_list'))
+        self.assertTemplateUsed(response, 'blog/posts_list.html')
+        
+    def test_blog_detail_template(self):
+        response = self.client.get(reverse('post_detail', args=[self.post1.pk]))
+        self.assertTemplateUsed(response, 'blog/post_detail.html')
+    

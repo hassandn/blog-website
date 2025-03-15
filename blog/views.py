@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 
 def post_list_view(request):
-    posts = Post.objects.all()
+    posts = Post.objects.filter(status='pub')
     context = {
         'posts_list': posts
     }

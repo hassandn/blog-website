@@ -12,10 +12,17 @@ class BlogPostTest(TestCase):
         self.post1 = Post.objects.create(
             title="post one",
             text="This is my first post",
-            status=Post.STATUS_CHOICES[0],
+            status=Post.STATUS_CHOICES[0][0],# published
             author=self.user,
         )
-        
+
+        self.post2 = Post.objects.create(
+            title="post two",
+            text="this is my second post",
+            status=Post.STATUS_CHOICES[1][0],# draft
+            author=self.user,
+        )
+
     def test_post_list_url(self):
         response = self.client.get('/blog/')
         self.assertEqual(response.status_code, 200)
@@ -44,7 +51,12 @@ class BlogPostTest(TestCase):
     def test_status_404_if_post_id_not_exist(self):
         response = self.client.get(reverse('post_detail', args=[1000]))
         self.assertEqual(response.status_code, 404)
-        
+
+    def test_not_show_draft_posts(self):
+        response = self.client.get(reverse('post_list'))
+        self.assertContains(response, self.post1.title)
+        self.assertNotContains(response, self.post2.title)
+
 class TemplateTest(TestCase):
     def setUp(self):    
         self.user = User.objects.create(
